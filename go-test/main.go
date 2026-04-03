@@ -22,7 +22,7 @@ const (
 	nlbHost     = "bedrock-nlb-8b69cce82f32c532.elb.ap-northeast-1.amazonaws.com"
 	bedrockHost = "bedrock-runtime.ap-northeast-1.amazonaws.com"
 	region      = "ap-northeast-1"
-	runs        = 3
+	runs        = 20
 )
 
 var models = map[string]string{

@@ -52,6 +52,7 @@ HTTP/2 对 Bedrock 推理性能有显著影响，**测试必须确保 HTTP/2 开
 | Python boto3 | 不支持 | 仅 HTTP/1.1，需改用 httpx 方案 |
 
 > 本项目提供了 Python httpx 方案（`test_ttft_h2.py`）和 Go 方案（`go-test/main.go`）的完整示例。
+> 同时提供了 LiteLLM 代理方案（`test_litellm.py`），支持 OpenAI 兼容的 ChatCompletion 接口。
 
 ## 4. 测试前 Checklist
 
@@ -73,9 +74,11 @@ HTTP/2 对 Bedrock 推理性能有显著影响，**测试必须确保 HTTP/2 开
 | 单请求吞吐 | output_tokens / 生成耗时 | tokens/s |
 | 系统吞吐 | total_output_tokens / 测试总时长 | tokens/s |
 
-## 6. SDK 配置与示例代码
+## 6. 测试方式
 
-### Python — httpx + Bearer Token（推荐）
+### 方式 A：直连 NLB（性能基线）
+
+#### Python — httpx + Bearer Token（推荐）
 
 ```bash
 pip install httpx[http2] botocore
@@ -108,6 +111,40 @@ python3 test_ttft_h2.py
 | Python httpx | `httpx.Client(http2=True)` + `pip install h2` | 默认 | 默认 |
 | Go | 自动（TLS 下） | Go 1.21+ 默认 | 默认 |
 | Python boto3 | **不支持** | - | - |
+
+### 方式 B：LiteLLM 代理（OpenAI 兼容）
+
+基于 [LiteLLM](https://github.com/BerriAI/litellm) `feat/http2-support` 分支，提供标准 OpenAI ChatCompletion 接口。
+
+**架构：**
+```
+测试人员 (OpenAI SDK) ──HTTP/1.1──→ LiteLLM Proxy ──HTTP/2──→ NLB ──→ VPC Endpoint ──→ Bedrock
+```
+
+**关键技术点：**
+- LiteLLM 分支启用了 `LITELLM_ENABLE_HTTP2=True`，httpx 客户端走 HTTP/2
+- 通过 `start_litellm.py` 中的 DNS 重写，将 Bedrock 域名解析到 NLB IP（绕过 VPC Endpoint 的 HTTP/1.1 限制）
+- 日志已关闭（`turn_off_message_logging`、`disable_spend_logs`）以减少开销
+
+**运行测试：**
+```bash
+export LITELLM_URL=http://<LITELLM_EIP>:4000/v1/chat/completions
+export LITELLM_API_KEY=<your-api-key>
+python3 test_litellm.py
+```
+
+**测试人员使用：**
+```python
+from openai import OpenAI
+client = OpenAI(base_url="http://<LITELLM_EIP>:4000/v1", api_key="<your-api-key>")
+response = client.chat.completions.create(
+    model="claude-sonnet-4-6",  # 或 claude-opus-4-6
+    messages=[{"role": "user", "content": "hello"}],
+    stream=True,
+)
+```
+
+> 凭证及 LiteLLM EIP 见 `Enviroment.md`。
 
 ## 7. 执行计划
 
