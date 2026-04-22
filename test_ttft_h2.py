@@ -31,6 +31,7 @@ BEDROCK_HOST = "bedrock-runtime.ap-northeast-1.amazonaws.com"
 RUNS = 3
 
 MODELS = {
+    "Opus 4.7":   "global.anthropic.claude-opus-4-7",
     "Opus 4.6":   "global.anthropic.claude-opus-4-6-v1",
     "Sonnet 4.6": "global.anthropic.claude-sonnet-4-6",
 }

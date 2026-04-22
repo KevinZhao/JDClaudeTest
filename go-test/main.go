@@ -26,6 +26,7 @@ const (
 )
 
 var models = map[string]string{
+	"Opus 4.7":   "global.anthropic.claude-opus-4-7",
 	"Opus 4.6":   "global.anthropic.claude-opus-4-6-v1",
 	"Sonnet 4.6": "global.anthropic.claude-sonnet-4-6",
 }
@@ -214,7 +215,7 @@ func main() {
 	prompt := "Write a detailed explanation of how TCP/IP networking works, including all 4 layers."
 
 	// 按顺序测试
-	for _, name := range []string{"Opus 4.6", "Sonnet 4.6"} {
+	for _, name := range []string{"Opus 4.7", "Opus 4.6", "Sonnet 4.6"} {
 		runTest(client, name, models[name], prompt, 256, runs)
 	}
 

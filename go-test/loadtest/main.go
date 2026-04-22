@@ -569,7 +569,7 @@ func main() {
 	tpmTarget := flag.Float64("tpm-target", 3_000_000, "TPM target for PASS/FAIL verdict")
 
 	// Bedrock direct mode (default)
-	modelID := flag.String("model", "global.anthropic.claude-opus-4-6-v1", "Bedrock model ID")
+	modelID := flag.String("model", "global.anthropic.claude-opus-4-7", "Bedrock model ID")
 
 	// LiteLLM / OpenAI-compatible mode
 	endpoint := flag.String("endpoint", "", "OpenAI-compatible endpoint URL (enables LiteLLM mode)")

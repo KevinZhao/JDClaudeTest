@@ -29,8 +29,11 @@
 
 | Inference Profile ID | 模型 |
 |---------------------|------|
+| `global.anthropic.claude-opus-4-7` | Claude Opus 4.7 |
 | `global.anthropic.claude-opus-4-6-v1` | Claude Opus 4.6 |
 | `global.anthropic.claude-sonnet-4-6` | Claude Sonnet 4.6 |
+
+> Opus 4.7 的 model ID 无 `-v1` 后缀；使用前需确认账户已开启该模型访问。
 
 ## 3. 直连 NLB 的关键技术点
 
@@ -129,7 +132,7 @@ go build -o loadtest_bin .
 ./loadtest_bin \
   -qps=0.5 \
   -duration=5m \
-  -model=global.anthropic.claude-opus-4-6-v1 \
+  -model=global.anthropic.claude-opus-4-7 \
   -input-tokens=60000 \
   -max-tokens=1024 \
   -tpm-target=3000000
@@ -141,7 +144,7 @@ go build -o loadtest_bin .
 |------|------|------|
 | `-qps` | `0.5` | 每秒请求数 |
 | `-duration` | `5m` | 压测时长 |
-| `-model` | `global.anthropic.claude-opus-4-6-v1` | Bedrock 模型 ID |
+| `-model` | `global.anthropic.claude-opus-4-7` | Bedrock 模型 ID |
 | `-input-tokens` | `60000` | 目标输入 token 数（生成对应长度 prompt） |
 | `-max-tokens` | `1024` | 输出上限 |
 | `-tpm-target` | `3000000` | TPM 目标线（用于 PASS/FAIL 判定） |
