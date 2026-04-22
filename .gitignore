@@ -2,5 +2,7 @@ Enviroment.md
 CLAUDE.md
 design.md
 go-test/test_ttft
+go-test/loadtest_bin
+bedrock_loadtest_metrics.xlsx
 __pycache__/
 *.pyc
